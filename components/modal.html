@@ -1,0 +1,49 @@
+{% macro modal(id, title=None, size='', has_footer=True) %}
+<div class="modal" id="{{ id }}" tabindex="-1" role="dialog">
+  <div class="modal-backdrop"></div>
+  <div class="modal-dialog {{ size }}">
+    <div class="modal-content">
+      {% if title %}
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      {% endif %}
+
+      <div class="modal-body">
+        {{ caller() }}
+      </div>
+
+      {% if has_footer %}
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary modal-confirm">Save</button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro confirm_modal(id, title, message, confirm_text='Confirm', cancel_text='Cancel') %}
+<div class="modal" id="{{ id }}" tabindex="-1" role="dialog">
+  <div class="modal-backdrop"></div>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>{{ message }}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ cancel_text }}</button>
+        <button type="button" class="btn btn-danger modal-confirm">{{ confirm_text }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

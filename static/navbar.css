@@ -1,0 +1,174 @@
+/* Navbar styles */
+.main-navbar {
+  background-color: var(--neutral-800);
+  padding: var(--space-2) 0;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+  text-decoration: none;
+  margin-right: var(--space-4);
+}
+
+.navbar-brand:hover {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+.brand-text {
+  letter-spacing: 1px;
+}
+
+.navbar-toggler {
+  display: none;
+  color: white;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.navbar-toggler-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+}
+
+.navbar-collapse {
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-nav {
+  display: flex;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  margin-top: 0;
+}
+
+.nav-item {
+  margin: 0 var(--space-1);
+}
+
+.nav-item.active .nav-link {
+  color: var(--primary-light);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  color: var(--neutral-300);
+  padding: var(--space-2) var(--space-3);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  border-radius: var(--radius-md);
+}
+
+.nav-link:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.nav-icon {
+  margin-right: var(--space-2);
+  font-size: var(--font-size-lg);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-actions > * {
+  margin-left: var(--space-2);
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--neutral-300);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991px) {
+  .navbar-toggler {
+    display: block;
+  }
+
+  .navbar-collapse {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-collapse.show {
+    display: flex;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    width: 100%;
+    margin-top: var(--space-3);
+  }
+
+  .nav-item {
+    width: 100%;
+    margin: var(--space-1) 0;
+  }
+
+  .nav-link {
+    padding: var(--space-2);
+  }
+
+  .navbar-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Dark mode adjustments */
+.dark-mode .main-navbar {
+  background-color: var(--dark-surface);
+  border-bottom: 1px solid var(--dark-border);
+}
