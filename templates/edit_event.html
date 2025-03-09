@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="edit-event-container">
+    <h1>{{ 'Muuda sündmust' if not instance_id else 'Muuda korduvat sündmust' }}</h1>
+
+    {% if instance_id and event.recurrence != 'none' %}
+    <div class="edit-scope-selector">
+        <h3>Mida soovid muuta?</h3>
+        <form id="edit-scope-form" method="GET" action="{{ url_for('calendar.edit_event', id=event.id) }}">
+            <input type="hidden" name="instance" value="{{ instance_id }}">
+            <div class="radio-options">
+                <div class="radio-option {% if edit_scope == 'single' %}selected{% endif %}">
+                    <input type="radio" name="scope" id="scope-single" value="single" {% if edit_scope == 'single' %}checked{% endif %}>
+                    <label for="scope-single">Ainult see kordus</label>
+                    <div class="description">Muuda ainult seda konkreetset toimumisaega, teised jäävad samaks.</div>
+                </div>
+
+                <div class="radio-option {% if edit_scope == 'future' %}selected{% endif %}">
+                    <input type="radio" name="scope" id="scope-future" value="future" {% if edit_scope == 'future' %}checked{% endif %}>
+                    <label for="scope-future">See ja tulevased kordused</label>
+                    <div class="description">Muuda seda ja kõiki järgnevaid toimumisaegu.</div>
+                </div>
+
+                <div class="radio-option {% if edit_scope == 'all' or not edit_scope %}selected{% endif %}">
+                    <input type="radio" name="scope" id="scope-all" value="all" {% if edit_scope == 'all' or not edit_scope %}checked{% endif %}>
+                    <label for="scope-all">Kõik kordused</label>
+                    <div class="description">Muuda kogu sündmuse seeriat.</div>
+                </div>
+            </div>
+            <button type="submit" class="scope-submit">Jätka</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <form id="edit-event-form" method="POST" action="{{ url_for('calendar.edit_event', id=event.id) }}">
+        {% if instance_id %}
+        <input type="hidden" name="instance_id" value="{{ instance_id }}">
+        <input type="hidden" name="edit_scope" value="{{ edit_scope }}">
+        {% endif %}
+
+        <div class="form-group">
+            <label for="event-title">Pealkiri:</label>
+            <input type="text" id="event-title" name="title" value="{{ event.title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="event-description">Kirjeldus:</label>
+            <textarea id="event-description" name="description">{{ event.description }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label for="event-start-date">Algus kuupäev:</label>
+                <input type="date" id="event-start-date" name="start_date" value="{{ event.start_date }}" required>
+            </div>
+            <div class="form-group half">
+                <label for="event-start-time">Algus aeg:</label>
+                <input type="time" id="event-start-time" name="start_time" value="{{ event.start_time }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label for="event-end-date">Lõpu kuupäev:</label>
+                <input type="date" id="event-end-date" name="end_date" value="{{ event.end_date }}" required>
+            </div>
+            <div class="form-group half">
+                <label for="event-end-time">Lõpu aeg:</label>
+                <input type="time" id="event-end-time" name="end_time" value="{{ event.end_time }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="event-category">Kategooria:</label>
+            <select id="event-category" name="category" required>
+                <option value="personal" {% if event.category == 'personal' %}selected{% endif %}>Isiklik</option>
+                <option value="work" {% if event.category == 'work' %}selected{% endif %}>Töö</option>
+                <option value="family" {% if event.category == 'family' %}selected{% endif %}>Pere</option>
+                <option value="health" {% if event.category == 'health' %}selected{% endif %}>Tervis</option>
+                <option value="other" {% if event.category == 'other' %}selected{% endif %}>Muu</option>
+            </select>
+        </div>
+
+        {% if edit_scope != 'single' %}
+        <div class="form-group">
+            <label for="event-recurrence">Kordus:</label>
+            <select id="event-recurrence" name="recurrence" onchange="toggleRecurrenceOptions()">
+                <option value="none" {% if event.recurrence == 'none' %}selected{% endif %}>Ei kordu</option>
+                <option value="daily" {% if event.recurrence == 'daily' %}selected{% endif %}>Iga päev</option>
+                <option value="weekly" {% if event.recurrence == 'weekly' %}selected{% endif %}>Iga nädal</option>
+                <option value="monthly" {% if event.recurrence == 'monthly' %}selected{% endif %}>Iga kuu</option>
+                <option value="yearly" {% if event.recurrence == 'yearly' %}selected{% endif %}>Iga aasta</option>
+                <option value="custom" {% if event.recurrence == 'custom' %}selected{% endif %}>Kohandatud...</option>
+            </select>
+        </div>
+
+        <div id="recurrence-options" class="recurrence-options" style="display: {% if event.recurrence and event.recurrence != 'none' %}block{% else %}none{% endif %};">
+            <div class="form-group">
+                <label for="recurrence-interval">Intervalliga:</label>
+                <input type="number" id="recurrence-interval" name="recurrence_interval" min="1" value="{{ event.recurrence_interval or 1 }}">
+            </div>
+
+            <div class="form-group" id="weekday-selector" style="display: {% if event.recurrence == 'weekly' %}block{% else %}none{% endif %};">
+                <label>Nädalapäevad:</label>
+                <div class="weekday-checkboxes">
+                    <label><input type="checkbox" name="weekdays" value="1" {% if '1' in weekdays %}checked{% endif %}>E</label>
+                    <label><input type="checkbox" name="weekdays" value="2" {% if '2' in weekdays %}checked{% endif %}>T</label>
+                    <label><input type="checkbox" name="weekdays" value="3" {% if '3' in weekdays %}checked{% endif %}>K</label>
+                    <label><input type="checkbox" name="weekdays" value="4" {% if '4' in weekdays %}checked{% endif %}>N</label>
+                    <label><input type="checkbox" name="weekdays" value="5" {% if '5' in weekdays %}checked{% endif %}>R</label>
+                    <label><input type="checkbox" name="weekdays" value="6" {% if '6' in weekdays %}checked{% endif %}>L</label>
+                    <label><input type="checkbox" name="weekdays" value="0" {% if '0' in weekdays %}checked{% endif %}>P</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="recurrence-end">Lõpeb:</label>
+                <select id="recurrence-end" name="recurrence_end" onchange="toggleRecurrenceEndOptions()">
+                    <option value="never" {% if event.recurrence_end == 'never' %}selected{% endif %}>Mitte kunagi</option>
+                    <option value="after" {% if event.recurrence_end == 'after' %}selected{% endif %}>Pärast korduste arvu</option>
+                    <option value="on-date" {% if event.recurrence_end == 'on-date' %}selected{% endif %}>Kuupäeval</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="recurrence-count" style="display: {% if event.recurrence_end == 'after' %}block{% else %}none{% endif %};">
+                <label for="recurrence-count-value">Korduste arv:</label>
+                <input type="number" id="recurrence-count-value" name="recurrence_count" min="1" value="{{ event.recurrence_count or 10 }}">
+            </div>
+
+            <div class="form-group" id="recurrence-until" style="display: {% if event.recurrence_end == 'on-date' %}block{% else %}none{% endif %};">
+                <label for="recurrence-until-date">Lõpu kuupäev:</label>
+                <input type="date" id="recurrence-until-date" name="recurrence_until" value="{{ event.recurrence_until }}">
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="submit-button">Salvesta muudatused</button>
+            <a href="{{ url_for('calendar.calendar') }}" class="cancel-button">Tühista</a>
+
+            {% if not instance_id or edit_scope == 'all' %}
+            <a href="{{ url_for('calendar.delete_event', id=event.id) }}"
+               class="delete-button"
+               onclick="return confirm('Kas oled kindel, et soovid sündmuse kustutada?')">
+                Kustuta sündmus
+            </a>
+            {% elif instance_id %}
+            <a href="{{ url_for('calendar.delete_event', id=event.id, instance=instance_id, scope=edit_scope) }}"
+               class="delete-button"
+               onclick="return confirm('Kas oled kindel, et soovid sündmuse kustutada?')">
+                Kustuta {{ 'see kordus' if edit_scope == 'single' else 'see ja tulevased kordused' }}
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+    // Toggle recurrence options based on selection
+    function toggleRecurrenceOptions() {
+        const recurrenceType = document.getElementById('event-recurrence').value;
+        const recurrenceOptions = document.getElementById('recurrence-options');
+        const weekdaySelector = document.getElementById('weekday-selector');
+
+        if (recurrenceType === 'none') {
+            recurrenceOptions.style.display = 'none';
+        } else {
+            recurrenceOptions.style.display = 'block';
+
+            // Show weekday selector only for weekly recurrence
+            if (recurrenceType === 'weekly') {
+                weekdaySelector.style.display = 'block';
+            } else {
+                weekdaySelector.style.display = 'none';
+            }
+        }
+    }
+
+    // Toggle recurrence end options
+    function toggleRecurrenceEndOptions() {
+        const recurrenceEnd = document.getElementById('recurrence-end').value;
+        const countContainer = document.getElementById('recurrence-count');
+        const untilContainer = document.getElementById('recurrence-until');
+
+        if (recurrenceEnd === 'after') {
+            countContainer.style.display = 'block';
+            untilContainer.style.display = 'none';
+        } else if (recurrenceEnd === 'on-date') {
+            countContainer.style.display = 'none';
+            untilContainer.style.display = 'block';
+        } else {
+            countContainer.style.display = 'none';
+            untilContainer.style.display = 'none';
+        }
+    }
+
+    // Initialize the form
+    document.addEventListener('DOMContentLoaded', function() {
+        // Highlight the selected edit scope option
+        const scopeRadios = document.querySelectorAll('input[name="scope"]');
+        scopeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.radio-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                this.closest('.radio-option').classList.add('selected');
+            });
+        });
+    });
+</script>
+
+<style>
+    .edit-event-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .form-group.half {
+        flex: 1;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .submit-button, .scope-submit {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .cancel-button {
+        background-color: #f1f1f1;
+        color: #333;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .delete-button {
+        background-color: #f44336;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: center;
+        margin-left: auto;
+    }
+
+    .submit-button:hover {
+        background-color: #45a049;
+    }
+
+    .cancel-button:hover {
+        background-color: #e0e0e0;
+    }
+
+    .delete-button:hover {
+        background-color: #d32f2f;
+    }
+
+    /* Edit scope selector */
+    .edit-scope-selector {
+        margin-bottom: 25px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .edit-scope-selector h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+
+    .radio-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .radio-option {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+    }
+
+    .radio-option:hover {
+        background-color: #f5f5f5;
+    }
+
+    .radio-option.selected {
+        border-color: #4CAF50;
+        background-color: #e8f5e9;
+    }
+
+    .radio-option label {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .radio-option .description {
+        font-size: 0.9em;
+        color: #666;
+        margin-top: 5px;
+        margin-left: 20px;
+    }
+
+    /* Recurrence options */
+    .recurrence-options {
+        margin-top: 10px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .weekday-checkboxes {
+        display: flex;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .weekday-checkboxes label {
+        display: flex;
+        align-items: center;
+        font-weight: normal;
+    }
+
+    .weekday-checkboxes input {
+        margin-right: 3px;
+    }
+</style>
+{% endblock %}

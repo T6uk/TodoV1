@@ -1,0 +1,19 @@
+th,td {
+    border: solid 1px #b9aeae;
+    text-align: center;
+}
+
+.MealPlanContainer th {
+    background-color: rgba(238, 219, 219, 0.68);
+    border: solid 1px #b9aeae;
+
+}
+.MealPlanContainer td {
+    background-color: rgba(99, 229, 196, 0.02);
+    border: solid 1px #b9aeae;
+}
+
+.modal-header {
+    text-align: center;
+}
+

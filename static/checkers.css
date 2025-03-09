@@ -1,0 +1,173 @@
+/* Additional CSS to ensure board and pieces are visible */
+#checkers-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 1/1;
+    margin: 0 auto;
+    border: 4px solid #472b1d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Home screen styling */
+.checkers-logo {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+    position: relative;
+}
+
+.logo-board {
+    width: 100%;
+    height: 100%;
+    background: repeating-conic-gradient(#f7d6a0 0% 25%, #472b1d 0% 50%) 50% / 50px 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-piece {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    position: absolute;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.logo-piece.red {
+    background-color: #e63946;
+    top: 35px;
+    left: 35px;
+    z-index: 2;
+}
+
+.logo-piece.black {
+    background-color: #1d3557;
+    bottom: 35px;
+    right: 35px;
+    z-index: 1;
+}
+
+.board-square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    min-height: 30px;
+    min-width: 30px;
+}
+
+.board-square.black {
+    background-color: #472b1d;
+}
+
+.board-square.white {
+    background-color: #f7d6a0;
+}
+
+.piece {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    border: 2px solid #333;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+    min-height: 20px;
+    min-width: 20px;
+}
+
+.piece.red {
+    background-color: #e63946;
+    box-shadow: inset 0 0 8px #c1121f;
+}
+
+.piece.black {
+    background-color: #1d3557;
+    box-shadow: inset 0 0 8px #0b1c2c;
+}
+
+.piece.king::after {
+    content: "♔";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: #f1faee;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.piece.red.king::after {
+    color: #fff;
+}
+
+.piece.black.king::after {
+    color: #f0f0f0;
+}
+
+/* Highlighted squares for available moves */
+.board-square.highlight {
+    box-shadow: inset 0 0 10px 3px rgba(255, 255, 0, 0.7);
+}
+
+/* Selected piece */
+.piece.selected {
+    box-shadow: 0 0 0 3px yellow, inset 0 0 8px #000;
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    #checkers-board {
+        max-width: 300px;
+    }
+
+    .piece.king::after {
+        font-size: 1.2rem;
+    }
+}
+
+/* Game status message */
+#game-message {
+    min-height: 2rem;
+    color: #333;
+}
+
+#game-message.red-wins {
+    color: #e63946;
+}
+
+#game-message.black-wins {
+    color: #1d3557;
+}
+
+/* Current player indicator */
+#current-player::before {
+    content: "";
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background-color: #e63946;
+    border: 1px solid #333;
+}
+
+#current-player.black::before {
+    background-color: #1d3557;
+}
+
+/* Screen display rules */
+#home-screen, #settings-screen, #game-screen {
+    width: 100%;
+}
+
+#game-screen {
+    margin: 0 auto;
+}

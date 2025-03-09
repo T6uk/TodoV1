@@ -1,0 +1,378 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Tab Styling */
+.tabs {
+    margin-top: 20px;
+    border-bottom: 2px solid #ddd;
+    display: flex;
+    gap: 10px;
+}
+
+.tablink {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #555;
+    transition: color 0.3s, border-bottom 0.3s;
+}
+
+.tablink:hover {
+    color: #2c3e50;
+}
+
+.tablink.active {
+    color: #2c3e50;
+    border-bottom: 2px solid #2c3e50;
+}
+
+.tabcontent {
+    display: none;
+    padding: 20px 0;
+}
+
+/* Todo Item Styling */
+.todo-item {
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.todo-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.by-who {
+    flex: 1;
+    text-align: left;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.todo-name {
+    flex: 2;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+}
+
+.due-date {
+    flex: 1;
+    text-align: right;
+    color: #777;
+    font-size: 14px;
+}
+
+/* Priority-based colors */
+.priority-low {
+    border-left: 5px solid #28a745;
+}
+
+.priority-medium {
+    border-left: 5px solid #ffc107;
+}
+
+.priority-high {
+    border-left: 5px solid #dc3545;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.close {
+    color: black;
+    position: absolute;
+    top: 1px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #333;
+}
+
+.modal-header {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 16px;
+    color: black;
+    background-color: rgba(245, 240, 240, 0.6);
+}
+
+#modalByWho {
+    margin-left: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .todo-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .by-who,
+    .todo-name,
+    .due-date {
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .complete-button {
+        margin-top: 10px;
+    }
+}
+
+/* Form Styles */
+form input,
+form select,
+form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+/* Add Todo Button */
+.add-todo-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+.add-todo-button:hover {
+    background-color: #218838;
+}
+
+/* Standardize the width and styling of form inputs */
+#addTodoModal .modal-content form input[type="text"],
+#addTodoModal .modal-content form input[type="date"],
+#addTodoModal .modal-content form textarea,
+#addTodoModal .modal-content form select {
+    width: 100%;
+    max-width: 500px; /* Optional: Limit the width */
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding does not affect width */
+}
+
+/* Standardize the button styling */
+#addTodoModal .modal-content form button {
+    width: 100%;
+    max-width: 500px; /* Optional: Match input width */
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.todo-description {
+    white-space: pre-wrap;
+}
+
+#addTodoModal .modal-content form button:hover {
+    background-color: #0056b3;
+}
+
+/* Standardize the width and styling of form inputs */
+#editTodoModal .modal-content form input[type="text"],
+#editTodoModal .modal-content form input[type="date"],
+#editTodoModal .modal-content form textarea,
+#editTodoModal .modal-content form select {
+    width: 100%;
+    max-width: 500px; /* Optional: Limit the width */
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding does not affect width */
+}
+
+/* Standardize the button styling */
+#editTodoModal .modal-content form button {
+    width: 100%;
+    max-width: 500px; /* Optional: Match input width */
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#editTodoModal .modal-content form button:hover {
+    background-color: #0056b3;
+}
+
+.complete-button {
+    margin-left: 10px;
+    text-decoration: none;
+    color: green;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.delete-button {
+    margin-left: 10px;
+    text-decoration: none;
+    color: green;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.delete-button span {
+    font-size: 20px; /* Make arrow bigger */
+}
+
+.restore-button {
+    margin-left: 10px;
+    text-decoration: none;
+    color: green;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.restore-button span {
+    font-size: 20px; /* Make arrow bigger */
+}
+
+.edit-button {
+    margin-left: 10px;
+    text-decoration: none;
+    color: green;
+    font-size: 20px;
+    margin-bottom: 7px;
+}
+
+.filter-container {
+    margin-bottom: 10px;
+}
+
+#priority-filter {
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+#name-filter {
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+#date-filter {
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.highlight {
+    background-color: yellow; /* Highlight with a yellow background */
+    font-weight: bold; /* Make the text bold */
+    color: red; /* Optional: Change the text color to red */
+}

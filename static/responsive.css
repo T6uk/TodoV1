@@ -1,0 +1,162 @@
+/* Mobile Responsive Improvements */
+
+/* General mobile responsiveness for all pages */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  /* Improve form inputs on mobile */
+  input, select, textarea, button {
+    font-size: 16px !important; /* Prevents zoom on focus in iOS */
+    max-width: 100%;
+  }
+
+  /* Ensure tables don't overflow */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Stack tabs vertically on mobile */
+  .nav-tabs {
+    flex-direction: column;
+  }
+
+  .nav-tab-item {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}
+
+/* Specific improvements for checkers game */
+@media (max-width: 576px) {
+  #checkers-board {
+    max-width: 100% !important;
+    aspect-ratio: 1/1;
+  }
+
+  .board-square {
+    min-height: 25px;
+    min-width: 25px;
+  }
+
+  .piece {
+    width: 70%;
+    height: 70%;
+  }
+
+  .game-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #current-player {
+    margin-bottom: 10px;
+  }
+}
+
+/* Improving Calendar for mobile */
+@media (max-width: 768px) {
+  .fc-header-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fc-header-toolbar .fc-toolbar-chunk {
+    margin-bottom: 10px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 12px;
+  }
+
+  .fc-event-title {
+    font-size: 11px;
+    white-space: normal;
+  }
+
+  /* Make modal take more space on mobile */
+  .modal-content {
+    width: 95%;
+    margin: 5% auto;
+  }
+}
+
+/* Better responsiveness for Todo List */
+@media (max-width: 768px) {
+  .todo-item {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .todo-content {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .by-who, .todo-name, .due-date {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+  }
+
+  .todo-actions {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .filter-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-container select {
+    margin-bottom: 10px;
+  }
+}
+
+/* Food page mobile improvements */
+@media (max-width: 768px) {
+  #mealPlanner {
+    font-size: 14px;
+  }
+
+  #mealPlanner th {
+    padding: 4px;
+  }
+
+  .mealSelect {
+    width: 100%;
+  }
+}
+
+/* Challenge page responsive design */
+@media (max-width: 768px) {
+  .challenge-card {
+    width: 100%;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Fix facts container on mobile */
+@media (max-width: 768px) {
+  #fact-container {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  .facts {
+    width: 95%;
+  }
+}

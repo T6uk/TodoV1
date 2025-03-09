@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo & Calendar App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lifestyle.css') }}">
+</head>
+
+<body>
+<nav>
+    <div class="nav-links">
+        <a href="{{ url_for('todo') }}">Todo</a>
+        <a href="{{ url_for('calendar') }}">Kalender</a>
+        <a href="{{ url_for('lifestyle') }}">Elu</a>
+        <a href="{{ url_for('challenges') }}">Väljakutsed</a>
+        <a href="{{ url_for('food') }}">Söök</a>
+    </div>
+    <a href="{{ url_for('logout') }}" class="logout">Logi välja</a>
+</nav>
+
+    <!-- Tabs for Treening and Toitumine -->
+    <div class="tabs">
+        <button class="tablink active" onclick="openTab(event, 'treening')">Treening</button>
+        <button class="tablink" onclick="openTab(event, 'toitumine')">Toitumine</button>
+    </div>
+
+    <!-- Treening Tab -->
+    <div id="treening" class="tabcontent" style="display: block;">
+        <div class="treening-container">
+            <!-- Vertical sub-tabs -->
+            <div class="subtabs">
+                <button class="subtablink active" onclick="openSubTab(event, 'treeningud')">Treeningud</button>
+                <button class="subtablink" onclick="openSubTab(event, 'statistika')">Statistika</button>
+                <button class="subtablink" onclick="openSubTab(event, 'eesmärgid')">Eesmärgid</button>
+                <button class="subtablink" onclick="openSubTab(event, 'väljakutsed')">Väljakutsed</button>
+            </div>
+
+            <!-- Sub-tab content container -->
+            <div class="subtab-content-container">
+                <div id="treeningud" class="subtabcontent active">
+                    {% include 'workout.html' %}
+                </div>
+                <div id="statistika" class="subtabcontent">
+                    {% include 'stats.html' %}
+                </div>
+                <div id="eesmärgid" class="subtabcontent">
+                    {% include 'goals.html' %}
+                </div>
+                <div id="väljakutsed" class="subtabcontent">
+                    {% include 'challenges.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toitumine Tab -->
+    <div id="toitumine" class="tabcontent">
+        <h2>Toitumine</h2>
+        <p>Siia tuleb toitumise osa. Näiteks toiduplaanid, kalorite jälgimine jms.</p>
+    </div>
+
+    <!-- Add Workout Modal -->
+<div id="addWorkoutModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAddWorkoutModal()">&times;</span>
+        <h2>Lisa treening</h2>
+        <form method="POST" action="{{ url_for('add_workout') }}">
+            <!-- Workout Name -->
+            <label for="name">Treeningu nimi:</label>
+            <input type="text" id="name" name="name" placeholder="Treeningu nimi" required>
+
+            <!-- Description -->
+            <label for="description">Kirjeldus:</label>
+            <textarea id="description" name="description" placeholder="Kirjeldus" required></textarea>
+
+            <!-- Duration -->
+            <label for="duration">Aeg (minutites):</label>
+            <input type="number" id="duration" name="duration" placeholder="Aeg minutites" required>
+
+            <!-- Mood -->
+            <label for="mood">Meeleolu:</label>
+            <input type="text" id="mood" name="mood" placeholder="Meeleolu" required>
+
+            <!-- Who did the workout -->
+            <label for="who_did">Kes tegi?</label>
+            <select id="who_did" name="who_did" required>
+                <option value="Romet">Romet</option>
+                <option value="Eliis">Eliis</option>
+                <option value="Both">Mõlemad</option>
+            </select>
+
+            <!-- Date -->
+            <label for="date">Kuupäev:</label>
+            <input type="date" id="date" name="date" required>
+
+            <!-- Added By -->
+            <label for="added-by">Lisaja nimi:</label>
+            <input type="text" id="added-by" name="added_by" placeholder="Sinu nimi" required>
+
+            <button type="submit" class="submit-button">Lisa</button>
+        </form>
+    </div>
+</div>
+
+    <!-- JavaScript for Tab Switching -->
+    <script>
+        function openTab(evt, tabName) {
+            var tabcontent = document.getElementsByClassName("tabcontent");
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            var tablinks = document.getElementsByClassName("tablink");
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            var subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (var i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+
+            var subtablinks = document.getElementsByClassName("subtablink");
+            for (var i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        window.onload = function() {
+            var tab = "{{ tab }}";
+            if (tab) {
+                var tabButton = document.querySelector(`.tablink[onclick*="${tab}"]`);
+                if (tabButton) {
+                    tabButton.click();
+                }
+            }
+        };
+
+        function openAddWorkoutModal() {
+            document.getElementById('addWorkoutModal').style.display = 'block';
+        }
+
+        function closeAddWorkoutModal() {
+            document.getElementById('addWorkoutModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Manager</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='food.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='facts.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">
+    <!-- Add Animate.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MMM?</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('todo.todo') }}">Todo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('calendar.calendar') }}">Kalender</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('challenge.challenges') }}">Väljakutsed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('food.food') }}">Söök</a>
+                    </li>
+                </ul>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-light">Logi välja</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tabs -->
+    <div class="container mt-4">
+        <ul class="nav nav-tabs" id="foodTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="foodList-tab" data-bs-toggle="tab" data-bs-target="#FoodList" type="button" role="tab" aria-controls="FoodList" aria-selected="true">Food List</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="addFood-tab" data-bs-toggle="tab" data-bs-target="#AddFood" type="button" role="tab" aria-controls="AddFood" aria-selected="false">Add Food</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="foodWheel-tab" data-bs-toggle="tab" data-bs-target="#FoodWheel1" type="button" role="tab" aria-controls="FoodWheel1" aria-selected="false">Food Wheel</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="mealPlan-tab" data-bs-toggle="tab" data-bs-target="#MealPlan" type="button" role="tab" aria-controls="MealPlan" aria-selected="false">Weekly Meal Plan</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content mt-3" id="foodTabsContent">
+            <!-- Food List Tab -->
+            <div class="tab-pane fade show active" id="FoodList" role="tabpanel" aria-labelledby="foodList-tab">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for food in foods %}
+                        <tr>
+                            <td>{{ food.name }}</td>
+                            <td>{{ food.category }}</td>
+                            <td>{{ food.type }}</td>
+                            <td>
+                                <form action="/delete_food/{{ food.id }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Food Tab -->
+            <div class="tab-pane fade" id="AddFood" role="tabpanel" aria-labelledby="addFood-tab">
+                <form action="/add_food" method="POST" class="p-3 border rounded">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category:</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="dessert">Dessert</option>
+                            <option value="main_dish">Main Dish</option>
+                            <option value="appetizer">Appetizer</option>
+                            <option value="snack">Snack</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type:</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Food</button>
+                </form>
+            </div>
+
+           <!-- Food Wheel Tab -->
+<div class="tab-pane fade" id="FoodWheel1" role="tabpanel" aria-labelledby="foodWheel-tab">
+    <div class="mb-3">
+        <label for="categorySelector" class="form-label">Select Category:</label>
+        <select class="form-select" id="categorySelector">
+            <option value="all">All</option>
+            <option value="dessert">Dessert</option>
+            <option value="main_dish">Main dish</option>
+            <option value="appetizer">Appetizer</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="typeSelector" class="form-label">Select Type:</label>
+        <select class="form-select" id="typeSelector">
+            <option value="all">All</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+        </select>
+    </div>
+    <button id="pickFoodBtn" class="btn btn-primary mt-3">Pick Random Food!</button>
+
+    <!-- Congratulations Modal -->
+    <div id="congratsModal" class="modal fade" tabindex="-1" aria-labelledby="congratsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="congratsModalLabel">💥Juhuuuu!!💥</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="congratsMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            <!-- Meal Plan Tab -->
+            <div class="tab-pane fade" id="MealPlan" role="tabpanel" aria-labelledby="mealPlan-tab">
+                <div class="MealPlanContainer">
+                    <table class="table table-bordered" id="mealPlanner">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Breakfast</th>
+                                <th>Lunch</th>
+                                <th>Dinner</th>
+                                <th>Snack</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- JavaScript will populate this -->
+                        </tbody>
+                    </table>
+                    <button id="editMealPlan" class="btn btn-secondary">Edit</button>
+                    <button id="saveMealPlan" class="btn btn-primary" style="display: none;">Save Meal Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fact-container">
+    <div class="facts">
+        <div class="fact-text"><p id="fact-text">Loading...</p></div>
+    </div>
+</div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='food.js') }}"></script>
+    <script src="{{ url_for('static', filename='mealplan.js') }}"></script>
+    <script src="{{ url_for('static', filename='facts.js') }}"></script>
+</body>
+</html>
